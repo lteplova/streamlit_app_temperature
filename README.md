@@ -5,7 +5,7 @@
 
 **Данные** сгенерированы случайным образом, содержат 4 колонки и 54750 строк.  
 Колонки: город, дата, температура, сезон.  
-**Стэк:** `pandas`, `streamlit`, `LinearRegression`, `multiprocessing`, `asyncio`, `aiohttp`, `requests`, `matplotlib`
+**стек:** `pandas`, `streamlit`, `LinearRegression`, `multiprocessing`, `asyncio`, `aiohttp`, `requests`, `matplotlib`
 
 <img width="396" alt="image" src="https://github.com/user-attachments/assets/553b0541-497b-4ded-bea4-b1ca5b0d6a0c" />
 
