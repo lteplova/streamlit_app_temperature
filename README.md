@@ -3,8 +3,9 @@
 
 Готовое приложение доступно по ссылке: [приложение](https://appapptemperature-mqrlpxlrud8lc86dclvz7z.streamlit.app/)
 
-Данные сгенерированы случайным образом, содержат 4 колонки и 54750 строк.  
+**Данные** сгенерированы случайным образом, содержат 4 колонки и 54750 строк.  
 Колонки: город, дата, температура, сезон.  
+**Стэк:** `pandas`, `streamlit`, `LinearRegression`, `multiprocessing`, `asyncio`, `aiohttp`, `requests`, `matplotlib`
 
 <img width="396" alt="image" src="https://github.com/user-attachments/assets/553b0541-497b-4ded-bea4-b1ca5b0d6a0c" />
 
@@ -32,17 +33,17 @@
    - Данные на самом деле не совсем реальные (сюрпрайз). Поэтому на момент эксперимента погода в Берлине, Каире и Дубае была в рамках нормы, а в Пекине и Москве аномальная. Протестируйте свое решение для разных городов.
    - Попробуйте для получения текущей температуры использовать синхронные и асинхронные методы. Что здесь лучше использовать?
   
-   В файлах `monitoting.py`  и  `monitoring_async.py` был выполнен запрос текущей температуры с ресурса OpenWeatherMap и сравнение с профилем сезона для города, далее проведен анализ текущего значения температуры на аномальность. Было выполнено два вариант синхронным методом с помощью `response` и асинхронным `aiohttp & asyncio`.
+   В файлах `monitoting.py`  и  `monitoring_async.py` был выполнен запрос текущей температуры с ресурса OpenWeatherMap и сравнение с профилем сезона для города, далее проведен анализ текущего значения температуры на аномальность. Было выполнено два вариант синхронным методом с помощью `requests` и асинхронным `aiohttp & asyncio`.
 
 Вывод: время выполнения с асинхронностью и без примерно одинаковое.  В данном случае нет большой необходимости использовать асинхронные соединения, так как HTTP запросов к сайту довольно мало? а также запросы методом request выполняются довольно быстро.
 
 Результат выполнения без асинхронности:
-![image](https://github.com/user-attachments/assets/66031a38-458d-49ca-827e-b2b35046fb76)
+<img width="731" alt="image" src="https://github.com/user-attachments/assets/406a7816-610d-40aa-9478-eca2089b065e" />
+
 
 
 Результат выполнения с асинхронностью:
-![image](https://github.com/user-attachments/assets/bebe3349-4cd5-40c1-a184-ee5fabfa3b83)
-
+<img width="725" alt="image" src="https://github.com/user-attachments/assets/1710fab8-53c3-4c73-ad8b-9c4bb3435ba0" />
 
 
 
@@ -55,3 +56,19 @@
      - Временной ряд температур с выделением аномалий (например, точками другого цвета).
      - Сезонные профили с указанием среднего и стандартного отклонения.
    - Вывести текущую температуру через API и указать, нормальна ли она для сезона.
+  
+   Код приложения находится в файле `app.py`, ссылка на приложение [https://appapptemperature-mqrlpxlrud8lc86dclvz7z.streamlit.app/](https://appapptemperature-mqrlpxlrud8lc86dclvz7z.streamlit.app/)
+
+   Интерфейс приложения:
+
+   <img width="772" alt="image" src="https://github.com/user-attachments/assets/87d1776d-cdc8-42bd-9316-0e71f522afdd" />
+
+
+   <img width="736" alt="image" src="https://github.com/user-attachments/assets/1b01a5f1-af22-4003-9745-e86cc7455b37" />
+
+   <img width="753" alt="image" src="https://github.com/user-attachments/assets/73953aa6-f319-4a01-be0a-eeccbb3d7d06" />
+
+<img width="713" alt="image" src="https://github.com/user-attachments/assets/4e240b95-dc75-4ce6-91d8-ce4ec4d747ff" />
+
+
+
