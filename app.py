@@ -43,18 +43,19 @@ def main():
     if uploaded_file is not None:
         # вывод информации о текущей температуре с openweathermap и есть ли отклонение от нормы
         if api_key is not None:
-            city, cur_temp_c, m, s, norma = main_curr(selected_city, api_key)
-            cur_temp = get_current_temp(selected_city, api_key)
-            if cur_temp:
-                res = { "город" : selected_city,
-                        "сезон" : "winter",
-                        "температура" : cur_temp,
-                        "norma" : norma,
-                        "среднее" : m,
-                        "отклонение" : s
-                        }
-                # проверка на нормальность текущей температуры
-                st.json(res)
+            if main_curr(selected_city, api_key):
+                city, cur_temp_c, m, s, norma = main_curr(selected_city, api_key)
+                cur_temp = get_current_temp(selected_city, api_key)
+                if cur_temp:
+                    res = { "город" : selected_city,
+                            "сезон" : "winter",
+                            "температура" : cur_temp,
+                            "norma" : norma,
+                            "среднее" : m,
+                            "отклонение" : s
+                            }
+                    # проверка на нормальность текущей температуры
+                    st.json(res)
             else:
                 err = {
                 "code": 401,

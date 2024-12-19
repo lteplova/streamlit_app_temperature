@@ -39,20 +39,21 @@ def main(city, api_key):
     temperature = get_current_temp(city, api_key)
     if temperature is not None:
         cur_temp_cities[city] = temperature
+    #     подсчитываем профиль для города
+        pp[city] = profile(city, data)
+        for k, v in pp.items():
+            # подсчитываем границы аномалий
+            low = round(v['winter'][0], 2) - round(v['winter'][1], 2)
+            high = round(v['winter'][0], 2) + round(v['winter'][1], 2)
+            # сравниваем с границами
+            if cur_temp_cities[k] < high and cur_temp_cities[k] > low:
+                norma = "is normal"
+            else:
+                norma = "out of normal"
+            return  k, cur_temp_cities[k], round(v['winter'][0], 2),  round(v['winter'][1], 2), norma
     else:
         print("Не удалось получить температуру.")
-    #     подсчитываем профиль для города
-    pp[city] = profile(city, data)
-    for k, v in pp.items():
-        # подсчитываем границы аномалий
-        low = round(v['winter'][0], 2) - round(v['winter'][1], 2)
-        high = round(v['winter'][0], 2) + round(v['winter'][1], 2)
-        # сравниваем с границами
-        if cur_temp_cities[k] < high and cur_temp_cities[k] > low:
-            norma = "is normal"
-        else:
-            norma = "out of normal"
-        return  k, cur_temp_cities[k], round(v['winter'][0], 2),  round(v['winter'][1], 2), norma
+        return False
 
 
 if __name__ == "__main__":
