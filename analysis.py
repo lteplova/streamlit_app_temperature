@@ -56,6 +56,9 @@ def generate_realistic_temperature_data(cities, num_years=10):
 data = generate_realistic_temperature_data(list(seasonal_temperatures.keys()))
 data.to_csv('temperature_data.csv', index=False)
 
+# функция, выполняющая анализ данных, принимает на вход город и датафрейм
+# выводит город, датафрейм со скользящими, максимум, минимум, среднее, датафрейм с профилем по температурам,  датафрейм с профилем по скользящему среднему
+# датафрейм с профилем по скользящему с отклонением, список аномальных точек, тренд
 def main_analysis(city, df):
 
     new_df = df.copy()
@@ -63,7 +66,6 @@ def main_analysis(city, df):
     # вычисляем скользящее среднее и скользящее отклонение
     new_df['moving_average'] = new_df['temperature'].transform(lambda x: x.rolling(30).median()) # считаем скользящее среднее
     new_df['moving_std'] = new_df['temperature'].transform(lambda x: x.rolling(30).std()) # считаем скользящее std
-
     # Находим аномалии
     new_df['hot_anomaly'] = (new_df['temperature'] > (new_df['moving_average'] + 2 * new_df['moving_std']))
     new_df['cold_anomaly'] = (new_df['temperature'] < (new_df['moving_average'] - 2 * new_df['moving_std']))
@@ -74,8 +76,7 @@ def main_analysis(city, df):
     # профиль сезона по скользящим
     profile_season_with_moving_m = new_df.groupby(['season'])['moving_average'].agg(['mean', 'std']).reset_index()
     profile_season_with_moving_a = new_df.groupby(['season'])['moving_std'].agg(['mean', 'std']).reset_index()
-    #
-    # # определение тренда
+    # определение тренда
     new_df['numeric_date'] = new_df['timestamp'].apply(lambda x: (pd.to_datetime(x) - datetime(2010, 1, 1)).days)
     X = new_df['numeric_date'].values.reshape(-1, 1)
     y = new_df['temperature'].values
@@ -96,18 +97,18 @@ def main_analysis(city, df):
 cities = data.city.unique()
 df = data.copy()
 # city, new_df, max_t, min_t, mean_t, profile_season, profile_season_with_moving_m, profile_season_with_moving_a, anomaly_list, trend = main_analysis('Berlin', df)
+# функция для распараллеливанию по городам
 def process_city(city, df):
     return main_analysis(city, df)
 
 if __name__ == '__main__':
-
+    # вычисление без параллельности
     start = time.time()
     for city in cities:
         city, new_df, max_t, min_t, mean_t, profile_season, profile_season_with_moving_m, profile_season_with_moving_a, anomaly_list, trend = main_analysis(city, df)
-        print(city, trend)
     end = time.time()
     print(f"Время выполнения для всех городов: {end - start:.2f} секунд")
-
+    # вычисление с распараллеливанием  multiprocessing
     partial_process = partial(process_city, df=df)
     num_processes = multiprocessing.cpu_count()
     start = time.time()
@@ -119,4 +120,4 @@ if __name__ == '__main__':
 
 # Выводы: С использованием multiprocessing Pool время применения функции более длительное
 # 0.24 без мультипроцессинга
-# 1.95 с мультипроцессингом
+# 1.68 с мультипроцессингом

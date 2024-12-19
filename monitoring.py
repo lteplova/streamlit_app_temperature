@@ -2,6 +2,7 @@ import requests
 import pandas as pd
 import time
 
+# функция для создания словаря с профилем по сезонам
 def profile(city, df):
     new_df = df.copy()
     new_df = new_df.loc[df['city'] == city]
@@ -11,10 +12,9 @@ def profile(city, df):
         season_dict[row['season']] = [row['mean'], row['std']]
     return season_dict
 
-
 data = pd.read_csv("temperature_data.csv")
 cities = data["city"].unique()
-api_key = '00eea6919572f8bb24bb8ae8cd05e33c'
+# функция для запроса текущей температуры через API с помощью requests
 def get_current_temp(city, api_key):
     base_url = "http://api.openweathermap.org/data/2.5/weather"
     params = {
@@ -32,19 +32,22 @@ def get_current_temp(city, api_key):
         print(f"Ошибка запроса к API: {e}")
         return None
 
-def main(city):
-    API_KEY = api_key
+def main(city, api_key):
     cur_temp_cities = {}
     pp = {}
-    temperature = get_current_temp(city, API_KEY)
+    # получаем текущую температуру
+    temperature = get_current_temp(city, api_key)
     if temperature is not None:
         cur_temp_cities[city] = temperature
     else:
         print("Не удалось получить температуру.")
+    #     подсчитываем профиль для города
     pp[city] = profile(city, data)
     for k, v in pp.items():
+        # подсчитываем границы аномалий
         low = round(v['winter'][0], 2) - round(v['winter'][1], 2)
         high = round(v['winter'][0], 2) + round(v['winter'][1], 2)
+        # сравниваем с границами
         if cur_temp_cities[k] < high and cur_temp_cities[k] > low:
             norma = "is normal"
         else:
@@ -52,11 +55,10 @@ def main(city):
         return  k, cur_temp_cities[k], round(v['winter'][0], 2),  round(v['winter'][1], 2), norma
 
 
-
 if __name__ == "__main__":
     start = time.time()
     for city in cities:
-        city, cur_temp_c, m, s, norma = main(city)
+        city, cur_temp_c, m, s, norma = main(city, api_key)
         print(city, "Текущая:", cur_temp_c, "Средняя:", m, "Отклонение:", s, norma)
     end = time.time()
     print(f"Время выполнения без асинхронности {end - start:.2f} секунд")
@@ -65,5 +67,3 @@ if __name__ == "__main__":
 # Вывод без асинхронности выполнение сбора инфомации с сайта openweathermap выполняется быстрее
 # в данном случае нет большой необходимости использовать асинхронные соединения, так как HTTP запросов к сайту довольно мало
 # а также запросы методом request выполняются довольно быстро
-
-
